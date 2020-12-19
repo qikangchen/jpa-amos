@@ -1,10 +1,7 @@
 package com.github.qikangchen.Spring.Demo.data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "request")
 @Table(name = "request_time_stamp")
@@ -20,12 +17,12 @@ public class Request {
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
     private List<Incident> incidents;
 
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinTable(name = "request_info_mapping",
-//            joinColumns = @JoinColumn(name = "request_time_stamp_id"),
-//            inverseJoinColumns = @JoinColumn(name = "request_local_info_id")
-//    )
-//    private RequestLocalInfo requestLocalInfo;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "request_local_mapping",
+            joinColumns = @JoinColumn(name = "request_time_stamp_id"),
+            inverseJoinColumns = @JoinColumn(name = "request_local_info_id")
+    )
+    private RequestLocalInfo requestLocalInfo;
 
     public int getId() {
         return id;
@@ -54,10 +51,11 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{" +
-                "id=" + id +
-                ", requestTimeStamp=" + requestTimeStamp +
-                ", incidents=" + incidents +
-                '}';
+        return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("requestTimeStamp=" + requestTimeStamp)
+                .add("incidents=" + incidents)
+                .add("requestLocalInfo=" + requestLocalInfo)
+                .toString();
     }
 }

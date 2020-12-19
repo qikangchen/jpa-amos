@@ -2,6 +2,7 @@ package com.github.qikangchen.Spring.Demo.data;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "request_local_info")
@@ -19,6 +20,9 @@ public class RequestLocalInfo {
 
     @Column(name = "search_radius_in_km")
     private double searchRadiusInKm;
+
+    @OneToMany(mappedBy = "requestLocalInfo")
+    private List<Request> requests;
 
     public int getId() {
         return id;

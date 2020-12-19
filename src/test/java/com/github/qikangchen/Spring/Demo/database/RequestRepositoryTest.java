@@ -25,6 +25,7 @@ public class RequestRepositoryTest {
         Iterable<Request> requestList = requestRepository.findAll();
 
         requestList.forEach(System.out::println);
+        assertThat(requestList, iterableWithSize(1));
     }
 
     @Test

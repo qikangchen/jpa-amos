@@ -2,8 +2,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS incident_item;
 DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS request_time_stamp;
-DROP TABLE IF EXISTS request_info_mapping;
 DROP TABLE IF EXISTS request_local_info;
+DROP TABLE IF EXISTS request_info_mapping;
+DROP TABLE IF EXISTS request_local_mapping;
 
 CREATE TABLE IF NOT EXISTS incident_item (
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -34,9 +35,16 @@ CREATE TABLE IF NOT EXISTS request_info_mapping (
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     incident_item_id INT(4) UNSIGNED NOT NULL,
     request_time_stamp_id INT(4) UNSIGNED NOT NULL,
-    request_local_info_id INT(4) UNSIGNED NOT NULL,
     FOREIGN KEY (incident_item_id) REFERENCES incident_item(id),
+    FOREIGN KEY (request_time_stamp_id) REFERENCES request_time_stamp(id)
+);
+
+CREATE TABLE IF NOT EXISTS request_local_mapping (
+    id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    request_time_stamp_id INT(4) UNSIGNED NOT NULL,
+    request_local_info_id INT(4) UNSIGNED NOT NULL,
     FOREIGN KEY (request_time_stamp_id) REFERENCES request_time_stamp(id),
     FOREIGN KEY (request_local_info_id) REFERENCES request_local_info(id)
 );
+
 
