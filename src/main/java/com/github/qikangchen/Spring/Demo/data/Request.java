@@ -17,11 +17,7 @@ public class Request {
     @Column(name = "request_time_stamp")
     private int requestTimeStamp;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "request_info_mapping",
-            joinColumns = @JoinColumn(name = "request_time_stamp_id"),
-            inverseJoinColumns = @JoinColumn(name = "incident_item_id")
-    )
+    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
     private List<Incident> incidents;
 
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
