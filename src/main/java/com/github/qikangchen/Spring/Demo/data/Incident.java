@@ -15,7 +15,7 @@ public class Incident {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "incident", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "incident", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Location> locations;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

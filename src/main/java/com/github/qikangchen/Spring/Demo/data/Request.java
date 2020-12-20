@@ -14,7 +14,7 @@ public class Request {
     @Column(name = "request_time_stamp")
     private int requestTimeStamp;
 
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Incident> incidents;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -23,6 +23,9 @@ public class Request {
             inverseJoinColumns = @JoinColumn(name = "request_local_info_id")
     )
     private RequestLocalInfo requestLocalInfo;
+
+    @OneToMany(mappedBy = "request", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MatchedItem> matchedItems;
 
     public int getId() {
         return id;
@@ -56,6 +59,7 @@ public class Request {
                 .add("requestTimeStamp=" + requestTimeStamp)
                 .add("incidents=" + incidents)
                 .add("requestLocalInfo=" + requestLocalInfo)
+                .add("matchedItems=" + matchedItems)
                 .toString();
     }
 }

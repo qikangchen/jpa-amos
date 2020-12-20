@@ -16,7 +16,7 @@ public class Location {
     @Column(name = "longitude")
     private String longitude;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "incident_item_id")
     private Incident incident;
 

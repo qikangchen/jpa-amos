@@ -21,7 +21,7 @@ public class RequestLocalInfo {
     @Column(name = "search_radius_in_km")
     private double searchRadiusInKm;
 
-    @OneToMany(mappedBy = "requestLocalInfo")
+    @OneToMany(mappedBy = "requestLocalInfo", fetch = FetchType.LAZY)
     private List<Request> requests;
 
     public int getId() {
