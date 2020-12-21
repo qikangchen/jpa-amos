@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS matched_item_mapping(
     here_db_item_id INT(4) UNSIGNED NOT NULL,
     confidence_level INT(4) UNSIGNED NOT NULL,
     request_time_stamp_id INT(4) UNSIGNED NOT NULL,
-    FOREIGN KEY (request_time_stamp_id) REFERENCES request_time_stamp(id)
+    FOREIGN KEY (request_time_stamp_id) REFERENCES request_time_stamp(id),
+    FOREIGN KEY (tomtom_db_item_id) REFERENCES incident_item(id),
+    FOREIGN KEY (here_db_item_id) REFERENCES incident_item(id)
 );
 
 CREATE TABLE IF NOT EXISTS request_time_stamp (
