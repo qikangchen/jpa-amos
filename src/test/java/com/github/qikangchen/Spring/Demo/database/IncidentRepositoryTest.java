@@ -128,10 +128,10 @@ class IncidentRepositoryTest {
     }
 
     @Test
-    void testInsert1000IncidentsWithSaveAll(){
+    void testInsert100IncidentsWithSaveAll(){
 
         List<Incident> incidents = new ArrayList<>();
-        final int INCIDENT_AMOUNT = 1000;
+        final int INCIDENT_AMOUNT = 100;
         int LOCATION_AMOUNT = 10;
         for (int i = 0; i < INCIDENT_AMOUNT; i++) {
             Incident incident = new Incident();
@@ -149,6 +149,6 @@ class IncidentRepositoryTest {
 
         repo.saveAll(incidents);
 
-        assertThat(repo.findAll(), iterableWithSize(greaterThanOrEqualTo(1000)));
+        assertThat(repo.findAll(), iterableWithSize(greaterThanOrEqualTo(100)));
     }
 }
