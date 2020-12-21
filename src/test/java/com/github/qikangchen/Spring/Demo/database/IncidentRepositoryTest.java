@@ -2,9 +2,11 @@ package com.github.qikangchen.Spring.Demo.database;
 
 import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
 import com.github.qikangchen.Spring.Demo.data.Incident;
+import com.github.qikangchen.Spring.Demo.data.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -107,5 +109,46 @@ class IncidentRepositoryTest {
         incidents.get(0).setDescription("New description");
 
         assertThat(repo.findById(1).get().getDescription(), equalTo("New description"));
+    }
+
+    @Test
+    void testInsertIncidentWithLocation(){
+        Incident incident = new Incident();
+
+        Location location = new Location();
+        location.setLatitude("10.11");
+        location.setLongitude("12.13");
+
+        incident.addLocation(location);
+
+        repo.save(incident);
+
+        assertThat(incident.getId(), not(equalTo(0)));
+        assertThat(repo.findById(incident.getId()).get().getLocations(), hasSize(1));
+    }
+
+    @Test
+    void testInsert1000IncidentsWithSaveAll(){
+
+        List<Incident> incidents = new ArrayList<>();
+        final int INCIDENT_AMOUNT = 1000;
+        int LOCATION_AMOUNT = 10;
+        for (int i = 0; i < INCIDENT_AMOUNT; i++) {
+            Incident incident = new Incident();
+
+            for (int j = 0; j < LOCATION_AMOUNT; j++) {
+                Location location = new Location();
+                location.setLatitude("10.11");
+                location.setLongitude("12.13");
+                incident.addLocation(location);
+            }
+
+            incident.setDescription("Incident " + i);
+            incidents.add(incident);
+        }
+
+        repo.saveAll(incidents);
+
+        assertThat(repo.findAll(), iterableWithSize(greaterThanOrEqualTo(1000)));
     }
 }

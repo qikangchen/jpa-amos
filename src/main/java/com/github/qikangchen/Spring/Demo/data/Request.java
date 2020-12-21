@@ -35,6 +35,15 @@ public class Request {
         this.id = id;
     }
 
+    public void addIncident(Incident incident) {
+        incident.setRequest(this);
+
+        if(incidents == null){
+            incidents = new ArrayList<>();
+        }
+        incidents.add(incident);
+    }
+
     public List<Incident> getIncidents() {
         return incidents;
     }

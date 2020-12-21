@@ -20,6 +20,23 @@ public class Location {
     @JoinColumn(name = "incident_item_id")
     private Incident incident;
 
+    public Location(){
+
+    }
+
+    public Location(String latitude, String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+
+    public Incident getIncident() {
+        return incident;
+    }
+
+    public void setIncident(Incident incident) {
+        this.incident = incident;
+    }
 
     public int getId() {
         return id;
