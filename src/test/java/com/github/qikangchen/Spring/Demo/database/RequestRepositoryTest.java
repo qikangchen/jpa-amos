@@ -39,8 +39,8 @@ public class RequestRepositoryTest {
         Incident newIncident2 = new Incident();
         newIncident2.setDescription("New Incident2");
 
-        request.getIncidents().add(newIncident1);
-        request.getIncidents().add(newIncident2);
+        request.addIncident(newIncident1);
+        request.addIncident(newIncident2);
 
         requestRepository.save(request);
 
@@ -57,8 +57,8 @@ public class RequestRepositoryTest {
         Incident newIncident2 = new Incident();
         newIncident2.setDescription("New Incident2");
 
-        request.getIncidents().add(newIncident1);
-        request.getIncidents().add(newIncident2);
+        request.addIncident(newIncident1);
+        request.addIncident(newIncident2);
 
         requestRepository.findById(1).get().getIncidents().forEach(System.out::println);
         assertThat(requestRepository.findById(1).get().getIncidents(), hasSize(4));
@@ -73,8 +73,8 @@ public class RequestRepositoryTest {
         Incident newIncident2 = new Incident();
         newIncident2.setDescription("New Incident2");
 
-        request.getIncidents().add(newIncident1);
-        request.getIncidents().add(newIncident2);
+        request.addIncident(newIncident1);
+        request.addIncident(newIncident2);
 
         incidentRepository.findAll().forEach(System.out::println);
         assertThat(incidentRepository.findAll(), iterableWithSize(4));
@@ -89,8 +89,8 @@ public class RequestRepositoryTest {
         Incident newIncident2 = new Incident();
         newIncident2.setDescription("New Incident2");
 
-        request.getIncidents().add(newIncident1);
-        request.getIncidents().add(newIncident2);
+        request.addIncident(newIncident1);
+        request.addIncident(newIncident2);
 
         incidentRepository.findAll().forEach(System.out::println);
         assertThat(incidentRepository.findAll(), iterableWithSize(4));

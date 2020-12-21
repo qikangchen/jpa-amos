@@ -23,17 +23,30 @@ public class Request extends BaseEntity {
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MatchedItem> matchedItems;
 
-    public void addIncident(Incident incident) {
-        incident.setRequest(this);
-
+    protected List<Incident> getIncidentsInternal(){
         if(incidents == null){
             incidents = new ArrayList<>();
         }
-        incidents.add(incident);
+        return incidents;
+    }
+
+    protected void setIncidentInternal(List<Incident> incidents){
+        this.incidents = incidents;
     }
 
     public List<Incident> getIncidents() {
-        return incidents;
+        return Collections.unmodifiableList(incidents);
+    }
+
+    public void addIncident(Incident incident) {
+        if(incident.isNew()){
+            getIncidentsInternal().add(incident);
+        }
+        incident.setRequest(this);
+    }
+
+    public void removeIncident(Incident incident){
+        throw new IllegalStateException("Not yet implemented");
     }
 
     public void setIncidents(List<Incident> incidents) {

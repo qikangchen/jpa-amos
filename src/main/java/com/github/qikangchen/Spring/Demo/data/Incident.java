@@ -2,6 +2,7 @@ package com.github.qikangchen.Spring.Demo.data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -27,21 +28,27 @@ public class Incident extends BaseEntity {
     )
     private Request request;
 
-    public void addLocation(Location location){
-        location.setIncident(this);
-
+    protected List<Location> getLocationsInternal(){
         if(locations == null){
             locations = new ArrayList<>();
         }
-        locations.add(location);
-    }
-
-    public List<Location> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
+    public List<Location> getLocations() {
+        return Collections.unmodifiableList(locations);
+    }
+
+    public void addLocation(Location location){
+        if(location.isNew()){
+            getLocationsInternal().add(location);
+        }
+
+        location.setIncident(this);
+    }
+
+    public void removeLocation(Location location){
+        throw new IllegalStateException("Not yet implemented");
     }
 
     public String getDescription() {
