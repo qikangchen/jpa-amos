@@ -7,11 +7,8 @@ import java.util.Set;
 
 @Entity(name = "incident")
 @Table(name = "incident_item")
-public class Incident {
+public class Incident extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
 
     @Column(name = "description")
     private String description;
@@ -47,14 +44,6 @@ public class Incident {
         this.locations = locations;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -66,7 +55,7 @@ public class Incident {
     @Override
     public String toString() {
         return "Incident{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", description='" + description + '\'' +
                 ", locations=" + locations +
                 '}';

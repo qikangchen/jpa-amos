@@ -5,11 +5,7 @@ import java.util.StringJoiner;
 
 @Entity
 @Table(name = "matched_item_mapping")
-public class MatchedItem {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+public class MatchedItem extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "tomtom_db_item_id")
@@ -22,14 +18,6 @@ public class MatchedItem {
     @ManyToOne
     @JoinColumn(name = "request_time_stamp_id")
     private Request request;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Incident getTomtomIncident() {
         return tomtomIncident;
@@ -58,7 +46,7 @@ public class MatchedItem {
     @Override
     public String toString() {
         return new StringJoiner(", ", MatchedItem.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
+                .add("id=" + getId())
                 .add("tomtomIncident=" + tomtomIncident)
                 .add("hereIncident=" + hereIncident)
                 .toString();

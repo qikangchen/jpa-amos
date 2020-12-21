@@ -6,11 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "request_local_info")
-public class RequestLocalInfo {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+public class RequestLocalInfo extends BaseEntity {
 
     @Column(name = "centre_latitude")
     private double centreLatitude;
@@ -23,14 +19,6 @@ public class RequestLocalInfo {
 
     @OneToMany(mappedBy = "requestLocalInfo", fetch = FetchType.LAZY)
     private List<Request> requests;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public double getCentreLatitude() {
         return centreLatitude;
@@ -59,7 +47,7 @@ public class RequestLocalInfo {
     @Override
     public String toString() {
         return "RequestLocalInfo{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", centreLatitude=" + centreLatitude +
                 ", centreLongitude=" + centreLongitude +
                 ", searchRadiusInKm=" + searchRadiusInKm +

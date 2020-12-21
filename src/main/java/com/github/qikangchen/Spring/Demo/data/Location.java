@@ -4,11 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "location")
-public class Location {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+public class Location extends BaseEntity{
 
     @Column(name = "latitude")
     private String latitude;
@@ -38,14 +34,6 @@ public class Location {
         this.incident = incident;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getLatitude() {
         return latitude;
     }
@@ -65,7 +53,7 @@ public class Location {
     @Override
     public String toString() {
         return "Location{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
                 '}';

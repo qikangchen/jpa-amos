@@ -5,11 +5,7 @@ import java.util.*;
 
 @Entity(name = "request")
 @Table(name = "request_time_stamp")
-public class Request {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int id;
+public class Request extends BaseEntity {
 
     @Column(name = "request_time_stamp")
     private int requestTimeStamp;
@@ -26,14 +22,6 @@ public class Request {
 
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MatchedItem> matchedItems;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public void addIncident(Incident incident) {
         incident.setRequest(this);
@@ -64,7 +52,7 @@ public class Request {
     @Override
     public String toString() {
         return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
+                .add("id=" + getId())
                 .add("requestTimeStamp=" + requestTimeStamp)
                 .add("incidents=" + incidents)
                 .add("requestLocalInfo=" + requestLocalInfo)
