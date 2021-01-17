@@ -1,6 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS incident_item;
-DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS request_time_stamp;
 DROP TABLE IF EXISTS request_local_info;
 DROP TABLE IF EXISTS request_info_mapping;
@@ -9,16 +8,10 @@ DROP TABLE IF EXISTS matched_item_mapping;
 
 CREATE TABLE IF NOT EXISTS incident_item (
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    description VARCHAR(30)
+    description VARCHAR(30),
+    start_position JSON
 );
 
-CREATE TABLE IF NOT EXISTS location(
-    id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    latitude VARCHAR(30),
-    longitude VARCHAR(30),
-    incident_item_id INT(4) UNSIGNED NOT NULL,
-    FOREIGN KEY (incident_item_id) REFERENCES incident_item(id)
-);
 
 CREATE TABLE IF NOT EXISTS matched_item_mapping(
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

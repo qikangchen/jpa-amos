@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DataMysqlTest
 class IncidentRepositoryTest {
@@ -23,6 +25,24 @@ class IncidentRepositoryTest {
         repo.findAll().forEach(System.out::println);
     }
 
+
+    @Test
+    void testGetStartPosotion(){
+        Optional<Incident> byId = repo.findById(1);
+
+        System.out.println(byId.get());
+    }
+
+    @Test
+    void testStartPosition(){
+        Incident incident = new Incident();
+        Location startPosition = new Location("123", "456");
+        incident.setStartPosition(startPosition);
+
+        repo.save(incident);
+
+        repo.findAll().forEach(System.out::println);
+    }
 
     @Test
     void testAmountWithoutSavingNewIncident(){
@@ -128,6 +148,18 @@ class IncidentRepositoryTest {
         assertThat(incidentFromDb.getLocations(), hasSize(1));
         assertThat(incidentFromDb.getLocations().get(0).getLatitude(), equalTo("10.11"));
         assertThat(incidentFromDb.getLocations().get(0).getLongitude(), equalTo("12.13"));
+    }
+
+    @Test
+    void testInsertIncidentsWithAllInformation(){
+        Incident incident = new Incident();
+
+        Location location = new Location();
+        location.setLatitude("10.11");
+        location.setLongitude("12.13");
+        incident.addLocation(location);
+
+        fail();
     }
 
     @Test

@@ -1,6 +1,9 @@
 package com.github.qikangchen.Spring.Demo.data;
 
+import com.github.qikangchen.Spring.Demo.data.converter.LocationConverter;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,16 +13,44 @@ import java.util.Set;
 @Table(name = "incident_item")
 public class Incident extends BaseEntity {
 
+    public enum Provider{
+        TOMTOM, HERE
+    }
 
+    public enum Types{
+        ACCIDENT, CONSTRUCTION
+    }
+
+//    private String trafficId;
+//    private List<Types> type;
+//    private int size;
     @Column(name = "description")
     private String description;
-
-    @OneToMany(mappedBy = "incident",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
-    )
+//    private String city;
+//    private String country;
+//    private double lengthInMeter;
+//
+    @Convert(converter = LocationConverter.class)
+    @Column(name = "start_position")
+    private Location startPosition;
+//    private Location endPosition;
+    @Transient
     private List<Location> locations;
+//    private String startPositionStreet;
+//    private String endPositionStreet;
+//
+//    private boolean verified;
+//
+//    private Provider provider;
+//    private LocalDateTime entryTime;
+//    private LocalDateTime endTime;
+
+//    @OneToMany(mappedBy = "incident",
+//            cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            orphanRemoval = true
+//    )
+//    private List<Location> locations;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "request_info_mapping",
@@ -40,11 +71,7 @@ public class Incident extends BaseEntity {
     }
 
     public void addLocation(Location location){
-        if(location.isNew()){
-            getLocationsInternal().add(location);
-        }
-
-        location.setIncident(this);
+        getLocationsInternal().add(location);
     }
 
     public void removeLocation(Location location){
@@ -59,12 +86,20 @@ public class Incident extends BaseEntity {
         this.description = description;
     }
 
+    public Location getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(Location startPosition) {
+        this.startPosition = startPosition;
+    }
+
     @Override
     public String toString() {
         return "Incident{" +
                 "id=" + getId() +
                 ", description='" + description + '\'' +
-                ", locations=" + locations +
+                ", startPosition=" + startPosition +
                 '}';
     }
 
