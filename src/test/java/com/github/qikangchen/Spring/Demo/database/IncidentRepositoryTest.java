@@ -122,9 +122,12 @@ class IncidentRepositoryTest {
         incident.addLocation(location);
 
         repo.save(incident);
-
         assertThat(incident.getId(), not(equalTo(0)));
-        assertThat(repo.findById(incident.getId()).get().getLocations(), hasSize(1));
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getLocations(), hasSize(1));
+        assertThat(incidentFromDb.getLocations().get(0).getLatitude(), equalTo("10.11"));
+        assertThat(incidentFromDb.getLocations().get(0).getLongitude(), equalTo("12.13"));
     }
 
     @Test
