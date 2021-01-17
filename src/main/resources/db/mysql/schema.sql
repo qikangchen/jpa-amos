@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS request_local_info (
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     centre_latitude DOUBLE,
     centre_longitude DOUBLE,
-    search_radius_in_km DOUBLE
+    search_radius_in_km DOUBLE,
+    city_name VARCHAR(30)
 );
 
 CREATE TABLE IF NOT EXISTS request_info_mapping (

@@ -3,6 +3,7 @@ package com.github.qikangchen.Spring.Demo.data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "request_local_info")
@@ -16,6 +17,9 @@ public class RequestLocalInfo extends BaseEntity {
 
     @Column(name = "search_radius_in_km")
     private double searchRadiusInKm;
+
+    @Column(name = "city_name")
+    private String cityName;
 
     @OneToMany(mappedBy = "requestLocalInfo", fetch = FetchType.LAZY)
     private List<Request> requests;
@@ -46,11 +50,11 @@ public class RequestLocalInfo extends BaseEntity {
 
     @Override
     public String toString() {
-        return "RequestLocalInfo{" +
-                "id=" + getId() +
-                ", centreLatitude=" + centreLatitude +
-                ", centreLongitude=" + centreLongitude +
-                ", searchRadiusInKm=" + searchRadiusInKm +
-                '}';
+        return new StringJoiner(", ", RequestLocalInfo.class.getSimpleName() + "[", "]")
+                .add("centreLatitude=" + centreLatitude)
+                .add("centreLongitude=" + centreLongitude)
+                .add("searchRadiusInKm=" + searchRadiusInKm)
+                .add("cityName='" + cityName + "'")
+                .toString();
     }
 }

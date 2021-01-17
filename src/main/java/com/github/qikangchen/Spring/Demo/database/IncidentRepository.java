@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IncidentRepository extends CrudRepository<Incident, Integer> {
+interface IncidentRepository extends CrudRepository<Incident, Integer> {
 
     // Write query by name convention https://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html or https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html
     List<Incident> findByDescription(String description);

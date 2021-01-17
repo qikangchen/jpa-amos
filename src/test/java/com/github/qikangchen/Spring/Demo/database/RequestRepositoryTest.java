@@ -4,6 +4,7 @@ import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
 import com.github.qikangchen.Spring.Demo.data.Incident;
 import com.github.qikangchen.Spring.Demo.data.Location;
 import com.github.qikangchen.Spring.Demo.data.Request;
+import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,7 +22,8 @@ public class RequestRepositoryTest {
     private IncidentRepository incidentRepository;
     @Autowired
     private RequestRepository requestRepository;
-
+    @Autowired
+    private RequestLocalInfoRepository requestLocalInfoRepository;
     @Test
     void testFindAll(){
         Iterable<Request> requestList = requestRepository.findAll();
@@ -117,5 +119,56 @@ public class RequestRepositoryTest {
 
         assertThat(requestInDatabase.isPresent(), is(true));
         System.out.println(requestInDatabase.get());
+    }
+
+    @Test
+    void testFindByRequestTimeStamp(){
+        List<Request> requests = requestRepository.findByRequestTimeStamp(1000);
+
+        assertThat(requests, hasSize(1));
+
+        System.out.println(requests.get(0));
+    }
+
+
+    @Test
+    void testFindByRequestTimeStampNotInDb(){
+        List<Request> requests = requestRepository.findByRequestTimeStamp(12000);
+
+        assertThat(requests, hasSize(0));
+    }
+
+    @Test
+    void testFindByRequestLocalInfo(){
+        Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
+        List<Request> requests = requestRepository.findByRequestLocalInfo(berlin.get());
+
+        assertThat(requests, hasSize(1));
+
+        System.out.println(requests.get(0));
+    }
+
+    @Test
+    void testFindByRequestLocalInfoNotInDb(){
+        Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Muenchen");
+        assertThat(berlin.isPresent(), equalTo(false));
+    }
+
+    @Test
+    void testFindByRequestLocalInfoAndTimestamp(){
+        Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
+        Optional<Request> requests = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(berlin.get(), 1000);
+
+        assertThat(requests.isPresent(), equalTo(true));
+
+        System.out.println(requests.get());
+    }
+
+    @Test
+    void testFindByRequestLocalInfoAndTimestampNotInDb(){
+        Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
+        Optional<Request> requests = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(berlin.get(), 1001);
+
+        assertThat(requests.isPresent(), equalTo(false));
     }
 }

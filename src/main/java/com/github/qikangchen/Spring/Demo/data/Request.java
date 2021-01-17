@@ -42,7 +42,7 @@ public class Request extends BaseEntity {
         if(incident.isNew()){
             getIncidentsInternal().add(incident);
         }
-        incident.setRequest(this);
+        incident.setRequest(this);//Set foreign key
     }
 
     public void removeIncident(Incident incident){
