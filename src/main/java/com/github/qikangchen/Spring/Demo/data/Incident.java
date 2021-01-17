@@ -3,7 +3,7 @@ package com.github.qikangchen.Spring.Demo.data;
 import com.github.qikangchen.Spring.Demo.data.converter.LocationConverter;
 import com.github.qikangchen.Spring.Demo.data.converter.LocationListConverter;
 import com.github.qikangchen.Spring.Demo.data.converter.TypeListConverter;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +11,10 @@ import java.util.*;
 
 @Entity(name = "incident")
 @Table(name = "incident_item")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Incident extends BaseEntity {
 
     public enum Provider{

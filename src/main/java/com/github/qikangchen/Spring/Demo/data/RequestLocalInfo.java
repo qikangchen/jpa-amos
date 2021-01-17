@@ -1,12 +1,19 @@
 package com.github.qikangchen.Spring.Demo.data;
 
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
 @Table(name = "request_local_info")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestLocalInfo extends BaseEntity {
 
     @Column(name = "centre_latitude")
@@ -24,30 +31,6 @@ public class RequestLocalInfo extends BaseEntity {
     @OneToMany(mappedBy = "requestLocalInfo", fetch = FetchType.LAZY)
     private List<Request> requests;
 
-    public double getCentreLatitude() {
-        return centreLatitude;
-    }
-
-    public void setCentreLatitude(double centreLatitude) {
-        this.centreLatitude = centreLatitude;
-    }
-
-    public double getCentreLongitude() {
-        return centreLongitude;
-    }
-
-    public void setCentreLongitude(double centreLongitude) {
-        this.centreLongitude = centreLongitude;
-    }
-
-    public double getSearchRadiusInKm() {
-        return searchRadiusInKm;
-    }
-
-    public void setSearchRadiusInKm(double searchRadiusInKm) {
-        this.searchRadiusInKm = searchRadiusInKm;
-    }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", RequestLocalInfo.class.getSimpleName() + "[", "]")
@@ -56,5 +39,18 @@ public class RequestLocalInfo extends BaseEntity {
                 .add("searchRadiusInKm=" + searchRadiusInKm)
                 .add("cityName='" + cityName + "'")
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RequestLocalInfo that = (RequestLocalInfo) o;
+        return Double.compare(that.centreLatitude, centreLatitude) == 0 && Double.compare(that.centreLongitude, centreLongitude) == 0 && Double.compare(that.searchRadiusInKm, searchRadiusInKm) == 0 && Objects.equals(cityName, that.cityName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(centreLatitude, centreLongitude, searchRadiusInKm, cityName);
     }
 }

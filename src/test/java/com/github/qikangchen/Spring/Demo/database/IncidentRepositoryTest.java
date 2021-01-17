@@ -220,9 +220,9 @@ class IncidentRepositoryTest {
     }
 
     @Test
-    void testSave1000Incidents(){
+    void testSave100Incidents(){
         List<Incident> incidents = new ArrayList<>();
-        final int INCIDENT_AMOUNT = 1000;
+        final int INCIDENT_AMOUNT = 100;
         final int LOCATION_AMOUNT = 10;
 
         for (int i = 0; i < INCIDENT_AMOUNT; i++) {
@@ -273,16 +273,10 @@ class IncidentRepositoryTest {
         }
 
         repo.saveAll(incidents);
+
+        assertThat(repo.findAll(), iterableWithSize(100));
     }
 
-    @Test
-    void testAmountWithoutSavingNewIncident(){
-        Incident incident = new Incident();
-        incident.setDescription("New Incident");
-
-
-        assertThat(repo.findAll(), iterableWithSize(2));
-    }
 
     @Test
     void testAmountAfterSavingNewIncident(){
@@ -292,7 +286,7 @@ class IncidentRepositoryTest {
         repo.save(incident);
 
         System.out.println(repo.findAll());
-        assertThat(repo.findAll(), iterableWithSize(3));
+        assertThat(repo.findAll(), iterableWithSize(1));
     }
 
     @Test
@@ -307,60 +301,69 @@ class IncidentRepositoryTest {
         repo.save(incident2);
 
         System.out.println(repo.findAll());
-        assertThat(repo.findAll(), iterableWithSize(4));
+        assertThat(repo.findAll(), iterableWithSize(2));
     }
 
     @Test
     void testAlteringExistingIncidentWithoutSaving(){
-        Incident incident = repo.findById(1).get();
-        incident.setDescription("Altered");
+        Incident incident = new Incident();
+        incident.setDescription("My Incident");
+        repo.save(incident);
 
+        Incident incidentFromDb = repo.findAll().iterator().next();
+        incidentFromDb.setDescription("Altered");
 
-        System.out.println(repo.findAll());
-        assertThat(repo.findById(1).get().getDescription(), equalTo("Altered"));
+        assertThat(repo.findAll().iterator().next().getDescription(), equalTo("Altered"));
     }
 
     @Test
     void testAlteringExistingIncident(){
-        Incident incident = repo.findById(1).get();
-        incident.setDescription("Altered");
-
+        Incident incident = new Incident();
+        incident.setDescription("My Incident");
         repo.save(incident);
 
-        assertThat(repo.findById(1).get().getDescription(), equalTo("Altered"));
+        Incident incidentFromDb = repo.findAll().iterator().next();
+        incidentFromDb.setDescription("Altered");
+        repo.save(incidentFromDb);
+
+        assertThat(repo.findAll().iterator().next().getDescription(), equalTo("Altered"));
     }
 
     @Test
     void testDeletingIncident(){
-        Incident incident = repo.findById(1).get();
-        repo.delete(incident);
+        Incident incident = new Incident();
+        incident.setDescription("My Incident");
 
-        assertThat(repo.findById(1).isPresent(), is(false));
+        repo.save(incident);
+        assertThat(repo.count(), equalTo(1L));
+
+        repo.delete(incident);
+        assertThat(repo.count(), equalTo(0L));
 
     }
 
     @Test
     void testFindByDescription(){
-        List<Incident> incident = repo.findByDescription("Baustelle");
+        Incident incident = new Incident();
+        incident.setDescription("Baustelle");
+        repo.save(incident);
 
-        assertThat(incident, hasSize(1));
+        List<Incident> incidentsFromDb = repo.findByDescription("Baustelle");
+
+        assertThat(incidentsFromDb, hasSize(1));
     }
 
     @Test
     void testFindByDescriptionQuery(){
-        List<Incident> incidents = repo.findByDescriptionQuery("Baustelle");
+        Incident incident = new Incident();
+        incident.setDescription("Baustelle");
+        repo.save(incident);
 
-        assertThat(incidents, hasSize(1));
+        List<Incident> incidentsFromDb = repo.findByDescriptionQuery("Baustelle");
+
+        assertThat(incidentsFromDb, hasSize(1));
     }
 
-    @Test
-    void testFindByDescriptionQueryChange(){
-        List<Incident> incidents = repo.findByDescriptionQuery("Baustelle"); // ID=1
-
-        incidents.get(0).setDescription("New description");
-
-        assertThat(repo.findById(1).get().getDescription(), equalTo("New description"));
-    }
 
     @Test
     void testInsertIncidentWithLocation(){
@@ -381,46 +384,5 @@ class IncidentRepositoryTest {
         assertThat(incidentFromDb.getLocations(), hasSize(1));
         assertThat(incidentFromDb.getLocations().get(0).getLatitude(), equalTo("10.11"));
         assertThat(incidentFromDb.getLocations().get(0).getLongitude(), equalTo("12.13"));
-    }
-
-    @Test
-    void testInsertIncidentsWithAllInformation(){
-        Incident incident = new Incident();
-
-        Location location = new Location();
-        location.setLatitude("10.11");
-        location.setLongitude("12.13");
-        List<Location> locations = new ArrayList<>();
-        locations.add(location);
-
-        incident.setLocations(locations);
-        fail();
-    }
-
-    @Test
-    void testInsert100IncidentsWithSaveAll(){
-
-        List<Incident> incidents = new ArrayList<>();
-        final int INCIDENT_AMOUNT = 100;
-        int LOCATION_AMOUNT = 10;
-        for (int i = 0; i < INCIDENT_AMOUNT; i++) {
-            Incident incident = new Incident();
-
-            List<Location> locations = new ArrayList<>();
-            for (int j = 0; j < LOCATION_AMOUNT; j++) {
-                Location location = new Location();
-                location.setLatitude("10.11" + i);
-                location.setLongitude("12.13" + i);
-                locations.add(location);
-            }
-            incident.setLocations(locations);
-
-            incident.setDescription("Incident " + i);
-            incidents.add(incident);
-        }
-
-        repo.saveAll(incidents);
-
-        assertThat(repo.findAll(), iterableWithSize(greaterThanOrEqualTo(100)));
     }
 }
