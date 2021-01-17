@@ -1,16 +1,17 @@
 package com.github.qikangchen.Spring.Demo.data;
 
 import com.github.qikangchen.Spring.Demo.data.converter.LocationConverter;
+import com.github.qikangchen.Spring.Demo.data.converter.LocationListConverter;
+import com.github.qikangchen.Spring.Demo.data.converter.TypeListConverter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "incident")
 @Table(name = "incident_item")
+@Data
 public class Incident extends BaseEntity {
 
     public enum Provider{
@@ -21,36 +22,58 @@ public class Incident extends BaseEntity {
         ACCIDENT, CONSTRUCTION
     }
 
-//    private String trafficId;
-//    private List<Types> type;
-//    private int size;
+    @Column(name = "traffic_id")
+    private String trafficId;
+
+    @Convert(converter = TypeListConverter.class)
+    @Column(name = "types")
+    private List<Types> types;
+
+    @Column(name = "size")
+    private int size;
+
     @Column(name = "description")
     private String description;
-//    private String city;
-//    private String country;
-//    private double lengthInMeter;
-//
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "length_in_meter")
+    private double lengthInMeter;
+
     @Convert(converter = LocationConverter.class)
     @Column(name = "start_position")
     private Location startPosition;
-//    private Location endPosition;
-    @Transient
-    private List<Location> locations;
-//    private String startPositionStreet;
-//    private String endPositionStreet;
-//
-//    private boolean verified;
-//
-//    private Provider provider;
-//    private LocalDateTime entryTime;
-//    private LocalDateTime endTime;
 
-//    @OneToMany(mappedBy = "incident",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    private List<Location> locations;
+    @Convert(converter = LocationConverter.class)
+    @Column(name = "end_position")
+    private Location endPosition;
+
+    @Convert(converter = LocationListConverter.class)
+    @Column(name = "locations")
+    private List<Location> locations;
+
+    @Column(name = "start_position_street")
+    private String startPositionStreet;
+
+    @Column(name = "end_position_street")
+    private String endPositionStreet;
+
+    @Column(name = "verified")
+    private boolean verified;
+
+    @Enumerated
+    @Column(columnDefinition = "smallint")
+    private Provider provider;
+
+    @Column(name = "entry_time")
+    private LocalDateTime entryTime;
+
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "request_info_mapping",
@@ -59,51 +82,38 @@ public class Incident extends BaseEntity {
     )
     private Request request;
 
-    protected List<Location> getLocationsInternal(){
-        if(locations == null){
-            locations = new ArrayList<>();
-        }
-        return locations;
-    }
-
-    public List<Location> getLocations() {
-        return Collections.unmodifiableList(locations);
-    }
-
-    public void addLocation(Location location){
-        getLocationsInternal().add(location);
-    }
-
-    public void removeLocation(Location location){
-        throw new IllegalStateException("Not yet implemented");
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Location getStartPosition() {
-        return startPosition;
-    }
-
-    public void setStartPosition(Location startPosition) {
-        this.startPosition = startPosition;
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Incident.class.getSimpleName() + "[", "]")
+                .add("trafficId='" + trafficId + "'")
+                .add("types=" + types)
+                .add("size=" + size)
+                .add("description='" + description + "'")
+                .add("city='" + city + "'")
+                .add("country='" + country + "'")
+                .add("lengthInMeter=" + lengthInMeter)
+                .add("startPosition=" + startPosition)
+                .add("endPosition=" + endPosition)
+                .add("locations=" + locations)
+                .add("startPositionStreet='" + startPositionStreet + "'")
+                .add("endPositionStreet='" + endPositionStreet + "'")
+                .add("verified=" + verified)
+                .add("provider=" + provider)
+                .add("entryTime=" + entryTime)
+                .add("endTime=" + endTime)
+                .toString();
     }
 
     @Override
-    public String toString() {
-        return "Incident{" +
-                "id=" + getId() +
-                ", description='" + description + '\'' +
-                ", startPosition=" + startPosition +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Incident incident = (Incident) o;
+        return size == incident.size && Double.compare(incident.lengthInMeter, lengthInMeter) == 0 && verified == incident.verified && Objects.equals(trafficId, incident.trafficId) && Objects.equals(types, incident.types) && Objects.equals(description, incident.description) && Objects.equals(city, incident.city) && Objects.equals(country, incident.country) && Objects.equals(startPosition, incident.startPosition) && Objects.equals(endPosition, incident.endPosition) && Objects.equals(locations, incident.locations) && Objects.equals(startPositionStreet, incident.startPositionStreet) && Objects.equals(endPositionStreet, incident.endPositionStreet) && provider == incident.provider && Objects.equals(entryTime, incident.entryTime) && Objects.equals(endTime, incident.endTime);
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
+    @Override
+    public int hashCode() {
+        return Objects.hash(trafficId, types, size, description, city, country, lengthInMeter, startPosition, endPosition, locations, startPositionStreet, endPositionStreet, verified, provider, entryTime, endTime);
     }
 }

@@ -5,7 +5,9 @@ import com.github.qikangchen.Spring.Demo.data.Incident;
 import com.github.qikangchen.Spring.Demo.data.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +27,86 @@ class IncidentRepositoryTest {
         repo.findAll().forEach(System.out::println);
     }
 
+    @Test
+    void testTrafficId(){
+        Incident incident = new Incident();
+        incident.setTrafficId("TDD2339393939393");
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getTrafficId(), equalTo("TDD2339393939393"));
+    }
 
     @Test
-    void testGetStartPosotion(){
-        Optional<Incident> byId = repo.findById(1);
+    void testDescription(){
+        Incident incident = new Incident();
+        incident.setDescription("My description");
 
-        System.out.println(byId.get());
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getDescription(), equalTo("My description"));
+    }
+
+    @Test
+    void testCity(){
+        Incident incident = new Incident();
+        incident.setCity("Berlin");
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getCity(), equalTo("Berlin"));
+    }
+
+    @Test
+    void testCountry(){
+        Incident incident = new Incident();
+        incident.setCountry("Deutschland");
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getCountry(), equalTo("Deutschland"));
+    }
+
+    @Test
+    void testLengthInMeter(){
+        Incident incident = new Incident();
+        incident.setLengthInMeter(12355.45);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getLengthInMeter(), equalTo(12355.45));
+    }
+
+    @Test
+    void testTypes(){
+
+        List<Incident.Types> types = new ArrayList<>();
+        types.add(Incident.Types.ACCIDENT);
+        types.add(Incident.Types.CONSTRUCTION);
+
+        Incident incident = new Incident();
+        incident.setTypes(types);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getTypes(), equalTo(types));
+    }
+
+    @Test
+    void testSize(){
+        Incident incident = new Incident();
+        incident.setSize(3);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getSize(), equalTo(3));
     }
 
     @Test
@@ -41,7 +117,162 @@ class IncidentRepositoryTest {
 
         repo.save(incident);
 
-        repo.findAll().forEach(System.out::println);
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getStartPosition(), equalTo(startPosition));
+    }
+
+    @Test
+    void testEndPosition(){
+        Incident incident = new Incident();
+        Location endPosition = new Location("123", "456");
+        incident.setEndPosition(endPosition);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getEndPosition(), equalTo(endPosition));
+    }
+
+    @Test
+    void testLocations(){
+
+        Location location1 = new Location("123", "456");
+        Location location2 = new Location("789", "101");
+        List<Location> locations = new ArrayList<>();
+        locations.add(location1);
+        locations.add(location2);
+
+        Incident incident = new Incident();
+        incident.setLocations(locations);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getLocations(), equalTo(locations));
+    }
+
+    @Test
+    void testStartPositionStreet(){
+        Incident incident = new Incident();
+        incident.setStartPositionStreet("My Street");
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getStartPositionStreet(), equalTo("My Street"));
+    }
+
+    @Test
+    void testEndPositionStreet(){
+        Incident incident = new Incident();
+        incident.setEndPositionStreet("My Street");
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getEndPositionStreet(), equalTo("My Street"));
+    }
+
+    @Test
+    void testVerified(){
+        Incident incident = new Incident();
+        incident.setVerified(true);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.isVerified(), equalTo(true));
+    }
+
+    @Test
+    void testProvider(){
+        Incident incident = new Incident();
+        incident.setProvider(Incident.Provider.HERE);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getProvider(), equalTo(Incident.Provider.HERE));
+    }
+
+    @Test
+    void testEntryTime(){
+        Incident incident = new Incident();
+        LocalDateTime now = LocalDateTime.now();
+        incident.setEntryTime(now);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getEntryTime(), equalTo(now));
+    }
+
+    @Test
+    void testEndTime(){
+        Incident incident = new Incident();
+        LocalDateTime now = LocalDateTime.now();
+        incident.setEndTime(now);
+
+        repo.save(incident);
+
+        Incident incidentFromDb = repo.findById(incident.getId()).get();
+        assertThat(incidentFromDb.getEndTime(), equalTo(now));
+    }
+
+    @Test
+    void testSave1000Incidents(){
+        List<Incident> incidents = new ArrayList<>();
+        final int INCIDENT_AMOUNT = 1000;
+        final int LOCATION_AMOUNT = 10;
+
+        for (int i = 0; i < INCIDENT_AMOUNT; i++) {
+            Incident incident = new Incident();
+
+            incident.setTrafficId("MYTRAFFICID" + i);
+
+            List<Incident.Types> types = new ArrayList<>();
+            types.add(Incident.Types.ACCIDENT);
+            incident.setTypes(types);
+
+            incident.setSize(3);
+
+            incident.setDescription("My descritpiont" + i);
+
+            incident.setCity("Berlin");
+
+            incident.setCountry("Deutschland");
+
+            incident.setLengthInMeter(123.333);
+
+            incident.setStartPosition(new Location("13", "14"));
+
+            incident.setEndPosition(new Location("25", "33"));
+
+            List<Location> locations = new ArrayList<>();
+            for (int j = 0; j < LOCATION_AMOUNT; j++) {
+                Location location = new Location();
+                location.setLatitude("10.11" + i);
+                location.setLongitude("12.13" + i);
+                locations.add(location);
+            }
+            incident.setLocations(locations);
+
+            incident.setStartPositionStreet("My sTREEEET");
+
+            incident.setEndPositionStreet("My other street");
+
+            incident.setVerified(true);
+
+            incident.setProvider(Incident.Provider.HERE);
+
+            incident.setEntryTime(LocalDateTime.now());
+
+            incident.setEndTime(LocalDateTime.now());
+
+            incidents.add(incident);
+        }
+
+        repo.saveAll(incidents);
     }
 
     @Test
@@ -138,8 +369,10 @@ class IncidentRepositoryTest {
         Location location = new Location();
         location.setLatitude("10.11");
         location.setLongitude("12.13");
+        List<Location> locations = new ArrayList<>();
+        locations.add(location);
 
-        incident.addLocation(location);
+        incident.setLocations(locations);
 
         repo.save(incident);
         assertThat(incident.getId(), not(equalTo(0)));
@@ -157,8 +390,10 @@ class IncidentRepositoryTest {
         Location location = new Location();
         location.setLatitude("10.11");
         location.setLongitude("12.13");
-        incident.addLocation(location);
+        List<Location> locations = new ArrayList<>();
+        locations.add(location);
 
+        incident.setLocations(locations);
         fail();
     }
 
@@ -171,12 +406,14 @@ class IncidentRepositoryTest {
         for (int i = 0; i < INCIDENT_AMOUNT; i++) {
             Incident incident = new Incident();
 
+            List<Location> locations = new ArrayList<>();
             for (int j = 0; j < LOCATION_AMOUNT; j++) {
                 Location location = new Location();
-                location.setLatitude("10.11");
-                location.setLongitude("12.13");
-                incident.addLocation(location);
+                location.setLatitude("10.11" + i);
+                location.setLongitude("12.13" + i);
+                locations.add(location);
             }
+            incident.setLocations(locations);
 
             incident.setDescription("Incident " + i);
             incidents.add(incident);

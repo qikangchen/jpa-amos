@@ -8,8 +8,22 @@ DROP TABLE IF EXISTS matched_item_mapping;
 
 CREATE TABLE IF NOT EXISTS incident_item (
     id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    traffic_id VARCHAR(30),
     description VARCHAR(30),
-    start_position JSON
+    city VARCHAR(30),
+    country VARCHAR(30),
+    length_in_meter DOUBLE,
+    types JSON,
+    size SMALLINT,
+    start_position JSON,
+    end_position JSON,
+    locations JSON,
+    start_position_street VARCHAR(40),
+    end_position_street VARCHAR(40),
+    verified BOOLEAN,
+    provider SMALLINT,
+    entry_time DATE,
+    end_time DATE
 );
 
 

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,7 +110,11 @@ public class RequestRepositoryTest {
     void testInsertRequestWithIncidentAndLocation(){
         Incident incident = new Incident();
         incident.setDescription("New Incident");
-        incident.addLocation(new Location("11.12", "13.14"));
+
+        List<Location> locations = new ArrayList<>();
+        locations.add(new Location("12", "34"));
+
+        incident.setLocations(locations);
 
         Request request = new Request();
         request.addIncident(incident);
