@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface MatchedItemRepository extends CrudRepository<MatchedItem, Integer> {
+public interface MatchedItemRepository extends CrudRepository<MatchedItem, Integer> {
 }

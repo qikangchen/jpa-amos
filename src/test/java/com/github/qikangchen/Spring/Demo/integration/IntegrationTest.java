@@ -6,9 +6,13 @@ import com.github.qikangchen.Spring.Demo.data.MatchedItem;
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
 import com.github.qikangchen.Spring.Demo.database.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -20,6 +24,10 @@ public class IntegrationTest {
     private RequestRepository requestRepository;
     @Autowired
     private RequestLocalInfoRepository requestLocalInfoRepository;
+    @Autowired
+    private IncidentRepository incidentRepository;
+    @Autowired
+    private MatchedItemRepository matchedItemRepository;
 
     private MyRepo myRepo;
 
@@ -29,7 +37,7 @@ public class IntegrationTest {
     }
 
     @Test
-    void test(){
+    void test() throws JsonProcessingException {
 
         // On startup: Add ctiy information
         RequestLocalInfo requestLocalInfoBerlin = new RequestLocalInfo();
@@ -65,6 +73,7 @@ public class IntegrationTest {
         Request request = new Request();
         request.addIncident(incidentHere);
         request.addIncident(incidentTomTom);
+        request.addMatchedItem(matchedItem);
         request.setRequestLocalInfo(requestLocalInfoBerlinFromDb);
         request.setRequestTimeStamp(2000);
         myRepo.insertRequest(request);
@@ -72,9 +81,26 @@ public class IntegrationTest {
 
         // Get request
         Request requestFromDb = myRepo.getRequest("Berlin", 2000);
-        System.out.println(requestFromDb);
         assertThat(requestFromDb, equalTo(request));
 
+        assertThat(requestLocalInfoRepository.count(), equalTo(2L));
+        assertThat(requestRepository.count(), equalTo(1L));
+        assertThat(incidentRepository.count(), equalTo(2L));
+        assertThat(matchedItemRepository.count(), equalTo(1L));
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(requestFromDb.getRequestLocalInfo());
+        System.out.println(getPrettyJson(json));
+    }
+
+    public static String getPrettyJson(String rawJson){
+        try {
+            JSONObject jsonObject = new JSONObject(rawJson);
+            return jsonObject.toString(3);
+        } catch (JSONException e) {
+            throw new IllegalStateException("Can't prettify this json: " + rawJson);
+        }
     }
 
 }
