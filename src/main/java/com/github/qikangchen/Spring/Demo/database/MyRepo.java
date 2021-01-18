@@ -2,6 +2,7 @@ package com.github.qikangchen.Spring.Demo.database;
 
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +26,9 @@ public class MyRepo {
 
     public Request getRequest(String cityName, int timeStamp){
 
-        Optional<RequestLocalInfo> requestLocalInfo = requestLocalInfoRepository.findByCityName(cityName);
-        if(!requestLocalInfo.isPresent()){
-            throw new IllegalStateException("Can't find Local info with ciy name: " + cityName);
-        }
+        RequestLocalInfo requestLocalInfo = getRequestLocalInfoFromCityName(cityName);
 
-        Optional<Request> request = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(requestLocalInfo.get(), timeStamp);
+        Optional<Request> request = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(requestLocalInfo, timeStamp);
         if(!request.isPresent()){
             throw new IllegalStateException("Can't find timestamp " + timeStamp + " in this location: " + requestLocalInfo);
         }
@@ -39,14 +37,27 @@ public class MyRepo {
     }
 
     public List<RequestLocalInfo> getLocalInfos(){
-        throw new IllegalStateException("Not yet implemented");
+
+        Iterable<RequestLocalInfo> requestLocalInfos = requestLocalInfoRepository.findAll();
+        return ImmutableList.copyOf(requestLocalInfos);
+
     }
 
-    public List<RequestRepository.Timestamp> getTimeStampsFromCityName(){
-        throw new IllegalStateException("Not yet implemented");
+    public RequestLocalInfo getRequestLocalInfoFromCityName(String cityName){
+
+        Optional<RequestLocalInfo> requestLocalInfo = requestLocalInfoRepository.findByCityName(cityName);
+        if(!requestLocalInfo.isPresent()){
+            throw new IllegalStateException("Can't find Local info with ciy name: " + cityName);
+        }
+
+        return requestLocalInfo.get();
     }
 
-    public void dropAllData(){
-        requestRepository.deleteAll();
+    public List<RequestRepository.Timestamp> getTimeStampsFromCityName(String cityName){
+
+        RequestLocalInfo requestLocalInfo = getRequestLocalInfoFromCityName(cityName);
+
+        return requestRepository.findByRequestLocalInfo(requestLocalInfo, RequestRepository.Timestamp.class);
     }
+
 }
