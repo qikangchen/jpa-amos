@@ -1,54 +1,52 @@
 package com.github.qikangchen.Spring.Demo.data;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
 @Table(name = "matched_item_mapping")
+@Setter
+@Getter
 public class MatchedItem extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "tomtom_db_item_id")
     private Incident tomtomIncident;
 
-    @ManyToOne
+    @ManyToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "here_db_item_id")
     private Incident hereIncident;
 
-    @ManyToOne
+    @Column(name = "confidence_level")
+    private int confidenceLevel;
+
+    @ManyToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "request_time_stamp_id")
     private Request request;
 
-    public Incident getTomtomIncident() {
-        return tomtomIncident;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchedItem that = (MatchedItem) o;
+        return confidenceLevel == that.confidenceLevel && Objects.equals(tomtomIncident, that.tomtomIncident) && Objects.equals(hereIncident, that.hereIncident) && Objects.equals(request, that.request);
     }
 
-    public void setTomtomIncident(Incident tomtomIncident) {
-        this.tomtomIncident = tomtomIncident;
-    }
-
-    public Incident getHereIncident() {
-        return hereIncident;
-    }
-
-    public void setHereIncident(Incident hereIncident) {
-        this.hereIncident = hereIncident;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
+    @Override
+    public int hashCode() {
+        return Objects.hash(tomtomIncident, hereIncident, confidenceLevel, request);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", MatchedItem.class.getSimpleName() + "[", "]")
-                .add("id=" + getId())
                 .add("tomtomIncident=" + tomtomIncident)
                 .add("hereIncident=" + hereIncident)
+                .add("confidenceLevel=" + confidenceLevel)
                 .toString();
     }
 }
