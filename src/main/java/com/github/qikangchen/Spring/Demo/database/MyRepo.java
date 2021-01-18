@@ -36,6 +36,10 @@ public class MyRepo {
         return request.get();
     }
 
+    public void insertLocalInfo(RequestLocalInfo requestLocalInfo) {
+        requestLocalInfoRepository.save(requestLocalInfo);
+    }
+
     public List<RequestLocalInfo> getLocalInfos(){
 
         Iterable<RequestLocalInfo> requestLocalInfos = requestLocalInfoRepository.findAll();
@@ -59,5 +63,4 @@ public class MyRepo {
 
         return requestRepository.findByRequestLocalInfo(requestLocalInfo, RequestRepository.Timestamp.class);
     }
-
 }

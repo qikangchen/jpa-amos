@@ -93,6 +93,24 @@ class MyRepoTest {
     }
 
     @Test
+    void testInsertLocalInfo(){
+
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+        requestLocalInfo.setCentreLongitude(111);
+        requestLocalInfo.setCentreLatitude(200);
+        requestLocalInfo.setSearchRadiusInKm(22);
+
+        myRepo.insertLocalInfo(requestLocalInfo);
+
+
+        RequestLocalInfo requestLocalInfoFromDb = requestLocalInfoRepository.findAll().iterator().next();
+
+        assertThat(requestLocalInfoRepository.count(), equalTo(1L));
+        assertThat(requestLocalInfoFromDb, equalTo(requestLocalInfo));
+    }
+
+    @Test
     void testGetLocalInfos(){
 
         RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
@@ -130,6 +148,9 @@ class MyRepoTest {
         RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
         requestLocalInfo.setCityName("Berlin");
 
+        RequestLocalInfo requestLocalInfo2 = new RequestLocalInfo();
+        requestLocalInfo2.setCityName("Muenchen");
+
         Request request = new Request();
         request.setRequestTimeStamp(1000);
         request.setRequestLocalInfo(requestLocalInfo);
@@ -138,8 +159,13 @@ class MyRepoTest {
         request2.setRequestTimeStamp(2000);
         request2.setRequestLocalInfo(requestLocalInfo);
 
+        Request request3 = new Request();
+        request3.setRequestTimeStamp(3000);
+        request3.setRequestLocalInfo(requestLocalInfo2);
+
         myRepo.insertRequest(request);
         myRepo.insertRequest(request2);
+        myRepo.insertRequest(request3);
 
 
         List<RequestRepository.Timestamp> timestamps = myRepo.getTimeStampsFromCityName("Berlin");

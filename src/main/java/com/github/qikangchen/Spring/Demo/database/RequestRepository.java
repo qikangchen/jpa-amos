@@ -13,7 +13,7 @@ import java.util.Optional;
 
 
 @Repository
-interface RequestRepository extends CrudRepository<Request, Integer> {
+public interface RequestRepository extends CrudRepository<Request, Integer> {
 
     List<Request> findByRequestTimeStamp(int requestTimeStamp);
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-interface RequestLocalInfoRepository extends CrudRepository<RequestLocalInfo, Integer> {
+public interface RequestLocalInfoRepository extends CrudRepository<RequestLocalInfo, Integer> {
 
     Optional<RequestLocalInfo> findByCityName(String cityName);
 

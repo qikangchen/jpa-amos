@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @DataMysqlTest
-class IncidentRepositoryTest {
+public class IncidentRepositoryTest {
 
     @Autowired
     private IncidentRepository repo;
