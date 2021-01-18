@@ -24,6 +24,14 @@ public class MyRepo {
         requestRepository.save(request);
     }
 
+    public void insertRequest(Request request, String cityName){
+
+        RequestLocalInfo requestLocalInfo = getRequestLocalInfoFromCityName(cityName);
+        request.setRequestLocalInfo(requestLocalInfo);
+
+        requestRepository.save(request);
+    }
+
     public Request getRequest(String cityName, int timeStamp){
 
         RequestLocalInfo requestLocalInfo = getRequestLocalInfoFromCityName(cityName);
