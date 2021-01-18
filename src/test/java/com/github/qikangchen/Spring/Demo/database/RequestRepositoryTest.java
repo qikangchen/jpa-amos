@@ -35,10 +35,10 @@ public class RequestRepositoryTest {
         request.setRequestTimeStamp(1000);
         request.setRequestLocalInfo(requestLocalInfo);
 
-        assertThat(requestRepository.count(), equalTo(0));
+        assertThat(requestRepository.count(), equalTo(0L));
 
         requestRepository.save(request);
-        assertThat(requestRepository.count(), equalTo(1));
+        assertThat(requestRepository.count(), equalTo(1L));
     }
 
     @Test
@@ -58,110 +58,56 @@ public class RequestRepositoryTest {
     }
 
     @Test
-    void testAdd2NewIncidentAndSave_RequestInDBHasNow4Incident(){
-        Request request = requestRepository.findAll().iterator().next();
-
-        Incident newIncident1 = new Incident();
-        newIncident1.setDescription("New Incident");
-        Incident newIncident2 = new Incident();
-        newIncident2.setDescription("New Incident2");
-
-        request.addIncident(newIncident1);
-        request.addIncident(newIncident2);
-
+    void testAlterRequestAddIncidents(){
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
         requestRepository.save(request);
 
-        requestRepository.findById(1).get().getIncidents().forEach(System.out::println);
-        assertThat(requestRepository.findById(1).get().getIncidents(), hasSize(4));
-    }
+        Request requestFromDb = requestRepository.findAll().iterator().next();
+        requestFromDb.setRequestTimeStamp(200);
 
-    @Test
-    void testAdd2NewIncidentWithoutSave_RequestInDBHasNow4Incident(){
-        Request request = requestRepository.findAll().iterator().next();
 
-        Incident newIncident1 = new Incident();
-        newIncident1.setDescription("New Incident");
-        Incident newIncident2 = new Incident();
-        newIncident2.setDescription("New Incident2");
+        Request requestFromDb2 = requestRepository.findAll().iterator().next();
 
-        request.addIncident(newIncident1);
-        request.addIncident(newIncident2);
-
-        requestRepository.findById(1).get().getIncidents().forEach(System.out::println);
-        assertThat(requestRepository.findById(1).get().getIncidents(), hasSize(4));
-    }
-
-    @Test
-    void testAdd2NewIncidentAndSave_4IncidentInDatabase(){
-        Request request = requestRepository.findAll().iterator().next();
-
-        Incident newIncident1 = new Incident();
-        newIncident1.setDescription("New Incident");
-        Incident newIncident2 = new Incident();
-        newIncident2.setDescription("New Incident2");
-
-        request.addIncident(newIncident1);
-        request.addIncident(newIncident2);
-
-        incidentRepository.findAll().forEach(System.out::println);
-        assertThat(incidentRepository.findAll(), iterableWithSize(4));
-    }
-
-    @Test
-    void testAdd2NewIncidentWithoutSave_4IncidentInDatabase(){
-        Request request = requestRepository.findAll().iterator().next();
-
-        Incident newIncident1 = new Incident();
-        newIncident1.setDescription("New Incident");
-        Incident newIncident2 = new Incident();
-        newIncident2.setDescription("New Incident2");
-
-        request.addIncident(newIncident1);
-        request.addIncident(newIncident2);
-
-        incidentRepository.findAll().forEach(System.out::println);
-        assertThat(incidentRepository.findAll(), iterableWithSize(4));
+        assertThat(requestFromDb2.getRequestTimeStamp(), equalTo(200));
     }
 
     @Test
     void testFindAllTimestamps(){
-        requestRepository.findAllTimeStamps().forEach(timestamp -> System.out.println(timestamp.getTimestamp()));
-
-//        assertThat(timestamps.get(0).timestamp(), equalTo(1000));
-    }
-
-    @Test
-    void testInsertRequestWithIncidentAndLocation(){
-        Incident incident = new Incident();
-        incident.setDescription("New Incident");
-
-        List<Location> locations = new ArrayList<>();
-        locations.add(new Location("12", "34"));
-
-        incident.setLocations(locations);
-
         Request request = new Request();
-        request.addIncident(incident);
-
+        request.setRequestTimeStamp(1000);
         requestRepository.save(request);
-        Optional<Request> requestInDatabase = requestRepository.findById(request.getId());
 
-        assertThat(requestInDatabase.isPresent(), is(true));
-        System.out.println(requestInDatabase.get());
+        Request request2 = new Request();
+        request2.setRequestTimeStamp(2000);
+        requestRepository.save(request2);
+
+        List<RequestRepository.Timestamp> timestamps = requestRepository.findAllTimeStamps();
+
+        assertThat(timestamps, hasSize(2));
+        assertThat(timestamps.get(0).getTimestamp(), equalTo(1000));
+        assertThat(timestamps.get(1).getTimestamp(), equalTo(2000));
     }
 
     @Test
     void testFindByRequestTimeStamp(){
+
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
+        requestRepository.save(request);
+
         List<Request> requests = requestRepository.findByRequestTimeStamp(1000);
-
         assertThat(requests, hasSize(1));
-
-        System.out.println(requests.get(0));
+        assertThat(requests.get(0).getRequestTimeStamp(), equalTo(1000));
     }
-
 
     @Test
     void testFindByRequestTimeStampNotInDb(){
+
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
+        requestRepository.save(request);
+
         List<Request> requests = requestRepository.findByRequestTimeStamp(12000);
 
         assertThat(requests, hasSize(0));
@@ -169,22 +115,39 @@ public class RequestRepositoryTest {
 
     @Test
     void testFindByRequestLocalInfo(){
+        Request request = new Request();
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+        request.setRequestLocalInfo(requestLocalInfo);
+        requestRepository.save(request);
+
         Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
         List<Request> requests = requestRepository.findByRequestLocalInfo(berlin.get());
 
         assertThat(requests, hasSize(1));
-
-        System.out.println(requests.get(0));
     }
 
     @Test
     void testFindByRequestLocalInfoNotInDb(){
+        Request request = new Request();
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+        request.setRequestLocalInfo(requestLocalInfo);
+        requestRepository.save(request);
+
         Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Muenchen");
         assertThat(berlin.isPresent(), equalTo(false));
     }
 
     @Test
     void testFindByRequestLocalInfoAndTimestamp(){
+        Request request = new Request();
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+        request.setRequestLocalInfo(requestLocalInfo);
+        request.setRequestTimeStamp(1000);
+        requestRepository.save(request);
+
         Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
         Optional<Request> requests = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(berlin.get(), 1000);
 
@@ -195,6 +158,14 @@ public class RequestRepositoryTest {
 
     @Test
     void testFindByRequestLocalInfoAndTimestampNotInDb(){
+        Request request = new Request();
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+        request.setRequestLocalInfo(requestLocalInfo);
+        request.setRequestTimeStamp(1000);
+        requestRepository.save(request);
+
+
         Optional<RequestLocalInfo> berlin = requestLocalInfoRepository.findByCityName("Berlin");
         Optional<Request> requests = requestRepository.findByRequestLocalInfoAndRequestTimeStamp(berlin.get(), 1001);
 
