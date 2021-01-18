@@ -1,15 +1,11 @@
 package com.github.qikangchen.Spring.Demo.database;
 
 import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
-import com.github.qikangchen.Spring.Demo.data.Incident;
-import com.github.qikangchen.Spring.Demo.data.Location;
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,20 +69,25 @@ public class RequestRepositoryTest {
     }
 
     @Test
-    void testFindAllTimestamps(){
+    void testFindAllTimestampsByCity(){
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+
         Request request = new Request();
         request.setRequestTimeStamp(1000);
+        request.setRequestLocalInfo(requestLocalInfo);
         requestRepository.save(request);
 
         Request request2 = new Request();
         request2.setRequestTimeStamp(2000);
+        request2.setRequestLocalInfo(requestLocalInfo);
         requestRepository.save(request2);
 
-        List<RequestRepository.Timestamp> timestamps = requestRepository.findAllTimeStamps();
+        List<RequestRepository.Timestamp> timestamps = requestRepository.findByRequestLocalInfo(requestLocalInfo, RequestRepository.Timestamp.class);
 
         assertThat(timestamps, hasSize(2));
-        assertThat(timestamps.get(0).getTimestamp(), equalTo(1000));
-        assertThat(timestamps.get(1).getTimestamp(), equalTo(2000));
+        assertThat(timestamps.get(0).getRequestTimeStamp(), equalTo(1000));
+        assertThat(timestamps.get(1).getRequestTimeStamp(), equalTo(2000));
     }
 
     @Test

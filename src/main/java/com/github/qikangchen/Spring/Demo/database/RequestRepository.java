@@ -19,13 +19,11 @@ interface RequestRepository extends CrudRepository<Request, Integer> {
 
     List<Request> findByRequestLocalInfo(RequestLocalInfo requestLocalInfo);
 
+    <T> List<T> findByRequestLocalInfo(RequestLocalInfo requestLocalInfo, Class<T> type);
+
     Optional<Request> findByRequestLocalInfoAndRequestTimeStamp(RequestLocalInfo requestLocalInfo, int requestTimeStamp);
 
-    //Use projection with a native query. Use As timestamp to map it to the interface method getTimestamp
-    @Query(value = "SELECT request_time_stamp.request_time_stamp AS timestamp FROM request_time_stamp", nativeQuery = true)
-    List<Timestamp> findAllTimeStamps();
-
     interface Timestamp {
-        int getTimestamp();
+        int getRequestTimeStamp();
     }
 }
