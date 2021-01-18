@@ -2,18 +2,13 @@ package com.github.qikangchen.Spring.Demo.integration;
 
 import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
 import com.github.qikangchen.Spring.Demo.data.Incident;
+import com.github.qikangchen.Spring.Demo.data.MatchedItem;
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
-import com.github.qikangchen.Spring.Demo.database.IncidentRepositoryTest;
-import com.github.qikangchen.Spring.Demo.database.MyRepo;
-import com.github.qikangchen.Spring.Demo.database.RequestLocalInfoRepository;
-import com.github.qikangchen.Spring.Demo.database.RequestRepository;
+import com.github.qikangchen.Spring.Demo.database.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -55,10 +50,21 @@ public class IntegrationTest {
 
         // Insert request
         RequestLocalInfo requestLocalInfoBerlinFromDb = myRepo.getRequestLocalInfoFromCityName("Berlin");
-        Incident incident = IncidentRepositoryTest.getIncidentDummy();
+
+        Incident incidentHere = DummyData.getIncidentDummy();
+        incidentHere.setProvider(Incident.Provider.HERE);
+
+        Incident incidentTomTom = DummyData.getIncidentDummy();
+        incidentTomTom.setProvider(Incident.Provider.TOMTOM);
+
+        MatchedItem matchedItem = new MatchedItem();
+        matchedItem.setHereIncident(incidentHere);
+        matchedItem.setTomtomIncident(incidentTomTom);
+        matchedItem.setConfidenceLevel(4);
 
         Request request = new Request();
-        request.addIncident(incident);
+        request.addIncident(incidentHere);
+        request.addIncident(incidentTomTom);
         request.setRequestLocalInfo(requestLocalInfoBerlinFromDb);
         request.setRequestTimeStamp(2000);
         myRepo.insertRequest(request);

@@ -1,6 +1,8 @@
 package com.github.qikangchen.Spring.Demo.database;
 
 import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
+import com.github.qikangchen.Spring.Demo.data.Incident;
+import com.github.qikangchen.Spring.Demo.data.MatchedItem;
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
 import org.junit.jupiter.api.Test;
@@ -45,12 +47,46 @@ public class RequestRepositoryTest {
         Request request = new Request();
         request.setRequestTimeStamp(1000);
         request.setRequestLocalInfo(requestLocalInfo);
-        request.addIncident(IncidentRepositoryTest.getIncidentDummy());
+        request.addIncident(DummyData.getIncidentDummy());
         requestRepository.save(request);
 
 
         Request requestFromDatabase = requestRepository.findAll().iterator().next();
         assertThat(requestFromDatabase, equalTo(request));
+    }
+
+    @Test
+    void testSaveRequestWithMatchedItem() {
+
+        Incident hereIncident = new Incident();
+        hereIncident.setDescription("Here");
+
+        Incident tomtomIncident = new Incident();
+        tomtomIncident.setDescription("TomTom");
+
+        MatchedItem matchedItem = new MatchedItem();
+        matchedItem.setHereIncident(hereIncident);
+        matchedItem.setTomtomIncident(tomtomIncident);
+        matchedItem.setConfidenceLevel(4);
+
+
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+
+
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
+        request.setRequestLocalInfo(requestLocalInfo);
+        request.addMatchedItem(matchedItem);
+        request.addIncident(hereIncident);
+        request.addIncident(tomtomIncident);
+
+
+        requestRepository.save(request);
+
+
+        Request requestFromDb = requestRepository.findAll().iterator().next();
+        assertThat(requestFromDb, equalTo(request));
     }
 
     @Test

@@ -41,10 +41,6 @@ public class Request extends BaseEntity {
         return incidents;
     }
 
-    protected void setIncidentInternal(List<Incident> incidents){
-        this.incidents = incidents;
-    }
-
     public void addIncident(Incident incident) {
         if(incident.isNew()){
             getIncidentsInternal().add(incident);
@@ -56,6 +52,28 @@ public class Request extends BaseEntity {
         throw new IllegalStateException("Not yet implemented");
     }
 
+    public List<MatchedItem> getMatchedItems(){
+        return Collections.unmodifiableList(matchedItems);
+    }
+
+    protected List<MatchedItem> getMatchedItemsInternal(){
+        if(matchedItems == null){
+            matchedItems = new ArrayList<>();
+        }
+
+        return matchedItems;
+    }
+
+    public void addMatchedItem(MatchedItem matchedItem){
+        if(matchedItem.isNew()){
+            getMatchedItemsInternal().add(matchedItem);
+        }
+        matchedItem.setRequest(this);
+    }
+
+    public void removeMatchedItem(MatchedItem matchedItem){
+        throw new IllegalStateException("Not yet implemented");
+    }
 
     @Override
     public boolean equals(Object o) {

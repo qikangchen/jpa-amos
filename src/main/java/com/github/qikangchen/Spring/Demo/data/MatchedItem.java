@@ -1,5 +1,6 @@
 package com.github.qikangchen.Spring.Demo.data;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,12 +34,12 @@ public class MatchedItem extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MatchedItem that = (MatchedItem) o;
-        return confidenceLevel == that.confidenceLevel && Objects.equals(tomtomIncident, that.tomtomIncident) && Objects.equals(hereIncident, that.hereIncident) && Objects.equals(request, that.request);
+        return confidenceLevel == that.confidenceLevel && Objects.equals(tomtomIncident, that.tomtomIncident) && Objects.equals(hereIncident, that.hereIncident);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tomtomIncident, hereIncident, confidenceLevel, request);
+        return Objects.hash(tomtomIncident, hereIncident, confidenceLevel);
     }
 
     @Override

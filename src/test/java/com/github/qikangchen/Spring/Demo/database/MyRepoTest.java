@@ -1,6 +1,8 @@
 package com.github.qikangchen.Spring.Demo.database;
 
 import com.github.qikangchen.Spring.Demo.annotation.DataMysqlTest;
+import com.github.qikangchen.Spring.Demo.data.Incident;
+import com.github.qikangchen.Spring.Demo.data.MatchedItem;
 import com.github.qikangchen.Spring.Demo.data.Request;
 import com.github.qikangchen.Spring.Demo.data.RequestLocalInfo;
 import org.junit.jupiter.api.BeforeEach;
