@@ -21,9 +21,16 @@ class RequestLocalInfoRepositoryTest {
 
     @Test
     void findByCityName() {
-        Optional<RequestLocalInfo> cityLocationInfo = repository.findByCityName("Berlin");
 
-        System.out.println(cityLocationInfo);
-        assertThat(cityLocationInfo.isPresent(), equalTo(true));
+        RequestLocalInfo cityLocationInfo = new RequestLocalInfo();
+        cityLocationInfo.setCityName("Berlin");
+        cityLocationInfo.setCentreLongitude(11);
+        cityLocationInfo.setCentreLongitude(22);
+        cityLocationInfo.setSearchRadiusInKm(30);
+
+        repository.save(cityLocationInfo);
+
+        Optional<RequestLocalInfo> cityLocationInfoFromDb = repository.findByCityName("Berlin");
+        assertThat(cityLocationInfoFromDb.isPresent(), equalTo(true));
     }
 }

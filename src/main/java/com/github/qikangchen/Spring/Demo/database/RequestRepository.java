@@ -15,9 +15,6 @@ import java.util.Optional;
 @Repository
 interface RequestRepository extends CrudRepository<Request, Integer> {
 
-//    @Query("FROM request_time_stamp i WHERE i.description = :description")
-//    List<Incident> findByCityNameAndTimeStamp(@Param("cityName") String cityName, @Param("timestamp") int timestamp);
-
     List<Request> findByRequestTimeStamp(int requestTimeStamp);
 
     List<Request> findByRequestLocalInfo(RequestLocalInfo requestLocalInfo);
@@ -28,7 +25,6 @@ interface RequestRepository extends CrudRepository<Request, Integer> {
     @Query(value = "SELECT request_time_stamp.request_time_stamp AS timestamp FROM request_time_stamp", nativeQuery = true)
     List<Timestamp> findAllTimeStamps();
 
-    //Interface need
     interface Timestamp {
         int getTimestamp();
     }

@@ -1,5 +1,8 @@
 package com.github.qikangchen.Spring.Demo.data;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -7,12 +10,13 @@ import java.util.*;
 @Table(name = "request_time_stamp")
 public class Request extends BaseEntity {
 
+    @Getter
+    @Setter
     @Column(name = "request_time_stamp")
     private int requestTimeStamp;
 
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Incident> incidents;
-
+    @Getter
+    @Setter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "request_local_mapping",
             joinColumns = @JoinColumn(name = "request_time_stamp_id"),
@@ -20,8 +24,15 @@ public class Request extends BaseEntity {
     )
     private RequestLocalInfo requestLocalInfo;
 
+    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Incident> incidents;
+
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MatchedItem> matchedItems;
+
+    public List<Incident> getIncidents() {
+        return Collections.unmodifiableList(incidents);
+    }
 
     protected List<Incident> getIncidentsInternal(){
         if(incidents == null){
@@ -32,10 +43,6 @@ public class Request extends BaseEntity {
 
     protected void setIncidentInternal(List<Incident> incidents){
         this.incidents = incidents;
-    }
-
-    public List<Incident> getIncidents() {
-        return Collections.unmodifiableList(incidents);
     }
 
     public void addIncident(Incident incident) {
@@ -49,18 +56,19 @@ public class Request extends BaseEntity {
         throw new IllegalStateException("Not yet implemented");
     }
 
-    public void setIncidents(List<Incident> incidents) {
-        this.incidents = incidents;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return requestTimeStamp == request.requestTimeStamp && Objects.equals(requestLocalInfo, request.requestLocalInfo) && Objects.equals(incidents, request.incidents) && Objects.equals(matchedItems, request.matchedItems);
     }
 
-    public int getRequestTimeStamp() {
-        return requestTimeStamp;
+    @Override
+    public int hashCode() {
+        return Objects.hash(requestTimeStamp, requestLocalInfo, incidents, matchedItems);
     }
-
-    public void setRequestTimeStamp(int requestTimeStamp) {
-        this.requestTimeStamp = requestTimeStamp;
-    }
-
 
     @Override
     public String toString() {

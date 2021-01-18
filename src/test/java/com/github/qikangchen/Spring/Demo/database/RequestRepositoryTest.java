@@ -25,12 +25,36 @@ public class RequestRepositoryTest {
     private RequestRepository requestRepository;
     @Autowired
     private RequestLocalInfoRepository requestLocalInfoRepository;
-    @Test
-    void testFindAll(){
-        Iterable<Request> requestList = requestRepository.findAll();
 
-        requestList.forEach(System.out::println);
-        assertThat(requestList, iterableWithSize(1));
+    @Test
+    void testSaveRequestAmount(){
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
+        request.setRequestLocalInfo(requestLocalInfo);
+
+        assertThat(requestRepository.count(), equalTo(0));
+
+        requestRepository.save(request);
+        assertThat(requestRepository.count(), equalTo(1));
+    }
+
+    @Test
+    void testSaveRequestEquals(){
+        RequestLocalInfo requestLocalInfo = new RequestLocalInfo();
+        requestLocalInfo.setCityName("Berlin");
+
+        Request request = new Request();
+        request.setRequestTimeStamp(1000);
+        request.setRequestLocalInfo(requestLocalInfo);
+        request.addIncident(IncidentRepositoryTest.getIncidentDummy());
+        requestRepository.save(request);
+
+
+        Request requestFromDatabase = requestRepository.findAll().iterator().next();
+        assertThat(requestFromDatabase, equalTo(request));
     }
 
     @Test
