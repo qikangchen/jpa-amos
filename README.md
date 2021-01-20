@@ -12,6 +12,13 @@ These models are derived from a normalized database.
 - @Convert
 - Projection
 
+## Setup
+The first step is to get the database running. They are two different databases. One for production and one for the test.
+See `application.properties` and `application-test.properties`.
+
+If you use docker and docker-compose. You can start the databases with `docker-compose -f mysql-compose.yml` respectively
+`docker-compose -f mysql-test-compose.yml`. 
+
 ## Background
 
 The database is from another project. The main task is to save traffic incidents from two Providers.
@@ -65,3 +72,15 @@ The local info is mapped trough `@JoinTable` with `request_local_mapping`.
 
 Incidents and Request are bidirectional mapped trough `@OneToMany(mappedBy = "request")`. In their counterpart: Incident 
 and MatchedItem are already `@ManyToOne` associations that allows the mapping.
+
+## Repositories
+In this project only the CRUD repository is used. Queries are created with [method names](https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html).
+
+Spring Boot [JPA Projection](https://www.baeldung.com/spring-data-jpa-projections) is ued in RequestRepository to read alle time stamps from a given city name.
+
+Every repository is tied togehther with the convient class `MyRepo`.
+
+## Tests
+Read tests to get a better understanding of the data. Use `IntegrationTest` to see a full use case of the data.
+
+Every test is annotated with `@DataMysqlTest`. With this the test database is used and every repository bean is injected.
