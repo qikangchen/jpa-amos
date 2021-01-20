@@ -1,12 +1,13 @@
 package com.github.qikangchen.Spring.Demo.data;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Entity
 @Table(name = "request_local_info")
@@ -29,7 +30,31 @@ public class RequestLocalInfo extends BaseEntity {
     private String cityName;
 
     @OneToMany(mappedBy = "requestLocalInfo", fetch = FetchType.LAZY)
-    private List<Request> requests;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Set<Request> requests;
+
+    @JsonIgnore
+    public Set<Request> getRequests(){
+        return ImmutableSet.copyOf(requests);
+    }
+
+    protected Set<Request> getRequestsInternal(){
+        if(requests == null){
+            requests = new HashSet<>();
+        }
+        return requests;
+    }
+
+    public void addRequest(Request request) {
+        if(request.isNew()){
+            getRequestsInternal().add(request);
+        }
+    }
+
+    public void removeRequest(Request request){
+        throw new IllegalStateException("Not yet implemented");
+    }
 
     @Override
     public String toString() {

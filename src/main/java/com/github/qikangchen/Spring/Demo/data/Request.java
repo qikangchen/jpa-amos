@@ -16,7 +16,6 @@ public class Request extends BaseEntity {
     private int requestTimeStamp;
 
     @Getter
-    @Setter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "request_local_mapping",
             joinColumns = @JoinColumn(name = "request_time_stamp_id"),
@@ -29,6 +28,12 @@ public class Request extends BaseEntity {
 
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MatchedItem> matchedItems;
+
+
+    public void setRequestLocalInfo(RequestLocalInfo requestLocalInfo){
+        requestLocalInfo.addRequest(this);
+        this.requestLocalInfo = requestLocalInfo;
+    }
 
     public List<Incident> getIncidents() {
         return Collections.unmodifiableList(incidents);
